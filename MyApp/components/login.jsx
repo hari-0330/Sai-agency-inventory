@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
+import { ipAddress } from "../ipConfig";
 
 const Login = ({ navigation }) => {
   const [phone, setPhone] = useState("");
@@ -19,7 +20,7 @@ const Login = ({ navigation }) => {
       }
 
       // Regular user login
-      const response = await fetch(`http://192.168.137.39:5000/api/login`, {
+      const response = await fetch(`http://${ipAddress}:5000/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, password }),
@@ -99,16 +100,19 @@ const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: theme.colors.background,
     justifyContent: 'center',
     padding: 20,
+    height:'100%',
+    width:'100%',
+    alignItems:'center',
   },
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: theme.roundness.medium,
-    padding: 24,
-    width: "50%",
+    padding: 12,
+    width: "80%",
+    height: "70%",
     alignSelf: "center",
     ...theme.shadows.medium,
   },

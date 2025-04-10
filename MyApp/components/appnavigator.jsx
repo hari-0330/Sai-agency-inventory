@@ -10,6 +10,7 @@ import AdminDashboard from "./adminDashboard";
 import ManageUsers from "./manageUsers";
 import ReportDelivery from "./ReportDelivery";
 import Reports from "./Reports";
+import Orders from "./Orders"; 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -25,6 +26,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ManageUsers" component={ManageUsers} options={{ headerShown: false }} />
         <Stack.Screen name="ReportDelivery" component={ReportDelivery} options={{ headerShown: false }} />
         <Stack.Screen name="Reports" component={Reports} options={{ headerShown: false }} />
+        <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

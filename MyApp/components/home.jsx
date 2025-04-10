@@ -24,7 +24,7 @@ const Home = ({ navigation }) => {
           
           <TouchableOpacity 
             style={styles.actionButton}
-            onPress={() => navigation.navigate('MyOrders')}
+            onPress={() => navigation.navigate('MyDeliveries')}
           >
             <Icon name="shopping-cart" size={32} color={theme.colors.surface} />
             <Text style={styles.buttonText}>My Orders</Text>

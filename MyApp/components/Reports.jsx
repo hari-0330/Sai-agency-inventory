@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Alert } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
 import { TouchableOpacity } from "react-native";
+import { ipAddress } from "../ipConfig";
 
 const Reports = ({ navigation }) => {
   const [activities, setActivities] = useState([]);
@@ -14,7 +15,7 @@ const Reports = ({ navigation }) => {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch('http://192.168.137.39:5000/api/activities');
+      const response = await fetch('http://${ipAddress}:5000/api/activities');
       const data = await response.json();
       if (response.ok) {
         setActivities(data.activities || []);
@@ -151,6 +152,7 @@ const Reports = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop:12,
     flexDirection: 'row',
     backgroundColor: theme.colors.background,
   },

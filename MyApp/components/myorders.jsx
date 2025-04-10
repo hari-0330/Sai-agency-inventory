@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from "./NavBar";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
+import { ipAddress } from "../ipConfig";
 
 const MyOrders = ({ navigation }) => {
   const [reports, setReports] = useState([]);
@@ -25,7 +26,7 @@ const MyOrders = ({ navigation }) => {
       // Fetch orders
       
       // Fetch reports for the specific user
-      const reportsResponse = await fetch(`http://192.168.137.39:5000/api/reports/${userPhone}`);
+      const reportsResponse = await fetch(`http://${ipAddress}:5000/api/reports/${userPhone}`);
       if (reportsResponse.ok) {
         const reportsData = await reportsResponse.json();
         setReports(reportsData.reports || []);

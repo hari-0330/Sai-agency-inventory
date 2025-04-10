@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
+import { ipAddress } from "../ipConfig";
 
 const AdminDashboard = ({ navigation }) => {
   const [stock, setStock] = useState({
@@ -22,7 +23,7 @@ const AdminDashboard = ({ navigation }) => {
 
   const fetchStock = async () => {
     try {
-      const response = await fetch('http://192.168.137.39:5000/api/stock');
+      const response = await fetch(`http://${ipAddress}:5000/api/stock`);
       const data = await response.json();
       if (response.ok) {
         setStock(data.stock);
@@ -39,7 +40,7 @@ const AdminDashboard = ({ navigation }) => {
 
   const handleUpdateStock = async () => {
     try {
-      const response = await fetch('http://192.168.137.39:5000/api/stock/update', {
+      const response = await fetch(`http://${ipAddress}:5000/api/stock/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ const AdminDashboard = ({ navigation }) => {
         
         <TouchableOpacity 
           style={styles.sideNavItem} 
-          onPress={() => navigation.navigate('ManageOrders')}
+          onPress={() => navigation.navigate('Orders')}
         >
           <Icon name="shopping-cart" size={24} color={theme.colors.primary} />
           <Text style={styles.sideNavText}>Orders</Text>
@@ -103,24 +104,26 @@ const AdminDashboard = ({ navigation }) => {
         <ScrollView style={styles.mainContent}>
           <View style={styles.header}>
             <Text style={styles.title}>Admin Dashboard</Text>
-            {!isEditing && (
-              <TouchableOpacity 
-                style={styles.editButton} 
-                onPress={() => setIsEditing(true)}
-              >
-                <Icon name="edit" size={24} color={theme.colors.primary} />
-              </TouchableOpacity>
-            )}
           </View>
 
           <View style={styles.stockContainer}>
+            <View style={styles.icon}>
+          
+          </View>
+          {!isEditing && (
+              <TouchableOpacity 
+                style={styles.editButton} 
+                onPress={() => setIsEditing(true)}
+              ><div>
+                <h4>Update</h4><Icon name="edit" size={24} color={theme.colors.primary}  /></div>
+              </TouchableOpacity>
+            )}
             <Text style={styles.sectionTitle}>Current Stock</Text>
             <View style={styles.stockItem}>
               <Text style={styles.stockLabel}>25L Cans</Text>
               {isEditing ? (
                 <TextInput
                   style={styles.stockInput}
-                  value={editedStock.cans25L}
                   onChangeText={(text) => setEditedStock({...editedStock, cans25L: text})}
                   keyboardType="numeric"
                 />
@@ -134,7 +137,6 @@ const AdminDashboard = ({ navigation }) => {
               {isEditing ? (
                 <TextInput
                   style={styles.stockInput}
-                  value={editedStock.cans10L}
                   onChangeText={(text) => setEditedStock({...editedStock, cans10L: text})}
                   keyboardType="numeric"
                 />
@@ -148,7 +150,6 @@ const AdminDashboard = ({ navigation }) => {
               {isEditing ? (
                 <TextInput
                   style={styles.stockInput}
-                  value={editedStock.cans1L}
                   onChangeText={(text) => setEditedStock({...editedStock, cans1L: text})}
                   keyboardType="numeric"
                 />
@@ -170,27 +171,10 @@ const AdminDashboard = ({ navigation }) => {
                   onPress={() => setIsEditing(false)}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
+                  <span>Use "-"</span>
                 </TouchableOpacity>
               </View>
             )}
-          </View>
-
-          <View style={styles.dashboardGrid}>
-            <View style={styles.gridItem}>
-              <Icon name="shopping-cart" size={32} color={theme.colors.primary} />
-              <Text style={styles.gridItemText}>Total Orders</Text>
-              <Text style={styles.gridItemNumber}>150</Text>
-            </View>
-            <View style={styles.gridItem}>
-              <Icon name="people" size={32} color={theme.colors.primary} />
-              <Text style={styles.gridItemText}>Active Users</Text>
-              <Text style={styles.gridItemNumber}>45</Text>
-            </View>
-            <View style={styles.gridItem}>
-              <Icon name="local-shipping" size={32} color={theme.colors.primary} />
-              <Text style={styles.gridItemText}>Deliveries</Text>
-              <Text style={styles.gridItemNumber}>120</Text>
-            </View>
           </View>
         </ScrollView>
       </View>
@@ -200,6 +184,8 @@ const AdminDashboard = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop:12,
+    width:'90%',
     flex: 1,
     flexDirection: 'row',
     backgroundColor: theme.colors.background,
@@ -212,6 +198,10 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: theme.colors.border,
     ...theme.shadows.small,
+  },
+  icon:{
+    alignItems: 'center',
+   
   },
   sideNavItem: {
     alignItems: 'center',
@@ -232,6 +222,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     padding: 24,
+    width:"100%"
   },
   mainContent: {
     flex: 1,
@@ -239,7 +230,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'right',
     marginBottom: 24,
   },
   title: {
@@ -248,6 +239,7 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   editButton: {
+    alignItems:"end",
     padding: 10,
     borderRadius: theme.roundness.small,
   },

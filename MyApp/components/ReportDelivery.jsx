@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
 import NavBar from './NavBar';
+import { ipAddress } from '../ipConfig';
+
 
 const ReportDelivery = ({ navigation }) => {
   const [deliveryDetails, setDeliveryDetails] = useState({
@@ -17,7 +19,7 @@ const ReportDelivery = ({ navigation }) => {
     try {
       const userPhone = await AsyncStorage.getItem('userPhone');
       const currentTime = new Date();
-      const response = await fetch('http://192.168.137.39:5000/api/report-delivery', {
+      const response = await fetch('http://${ipAddress}:5000/api/report-delivery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.roundness.medium,
     padding: 24,
-    width: '50%',
+    width: '80%',
     alignSelf: 'center',
     ...theme.shadows.medium,
   },

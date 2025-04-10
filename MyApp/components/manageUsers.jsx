@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavBar from './NavBar';
+import { ipAddress } from '../ipConfig';
 
 const ManageUsers = ({ navigation }) => {
   const [users, setUsers] = useState([]);
@@ -12,7 +13,7 @@ const ManageUsers = ({ navigation }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://192.168.137.39:5000/api/users', {
+      const response = await fetch(`http://${ipAddress}:5000/api/users`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +95,6 @@ const ManageUsers = ({ navigation }) => {
             windowSize={5}
           />
         </View>
-        <NavBar navigation={navigation} isAdmin={true} />
       </View>
     </SafeAreaView>
   );
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#f5f5f5',
+    padding:12,
   },
   sideNav: {
     width: 80,

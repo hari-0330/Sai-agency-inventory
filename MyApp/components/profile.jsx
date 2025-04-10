@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
 import NavBar from './NavBar';
+import { ipAddress } from '../ipConfig';
 
 const Profile = ({ navigation }) => {
   const [userDetails, setUserDetails] = useState(null);
@@ -36,7 +37,7 @@ const Profile = ({ navigation }) => {
         return;
       }
 
-      const response = await fetch(`http://192.168.137.39:5000/api/user/profile/${userPhone}`, {
+      const response = await fetch(`http://${ipAddress}:5000/api/user/profile/${userPhone}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const Profile = ({ navigation }) => {
   const handleSave = async () => {
     try {
       const userPhone = await AsyncStorage.getItem('userPhone');
-      const response = await fetch(`http://192.168.137.39:5000/api/user/update/${userPhone}`, {
+      const response = await fetch(`http://${ipAddress}:5000/api/user/update/${userPhone}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.roundness.medium,
     padding: 24,
-    width: '50%',
+    width: '80%',
     alignSelf: 'center',
     ...theme.shadows.medium,
   },

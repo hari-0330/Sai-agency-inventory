@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
+import { ipAddress } from "../ipConfig";
 
 const Signup = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -9,10 +10,16 @@ const Signup = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state for confirm password
 
   const handleSignup = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match!");
+      return;
+    }
+
     try {
-      const response = await fetch("http://192.168.137.39:5000/api/signup", {
+      const response = await fetch(`http://${ipAddress}:5000/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, age, gender, phone, password }),
@@ -112,6 +119,21 @@ const Signup = ({ navigation }) => {
           </View>
         </View>
 
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Confirm Password</Text>
+          <View style={styles.inputContainer}>
+            <Icon name="lock" size={20} color={theme.colors.secondary} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirm your password"
+              secureTextEntry
+              placeholderTextColor={theme.colors.secondary}
+            />
+          </View>
+        </View>
+
         <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
@@ -135,10 +157,12 @@ const styles = {
     backgroundColor: theme.colors.background,
   },
   card: {
+    marginTop:20,
     backgroundColor: theme.colors.card,
     borderRadius: 10,
     padding: 20,
-    width: "50%",
+    width: "80%",
+    innerHeight:"70%",
     alignSelf: "center",
     alignItems: "center",
   },
@@ -170,7 +194,6 @@ const styles = {
     borderWidth: 1,
     borderColor: theme.colors.secondary,
     borderRadius: 5,
-    
   },
   inputIcon: {
     padding: 12,
