@@ -19,7 +19,7 @@ const ReportDelivery = ({ navigation }) => {
     try {
       const userPhone = await AsyncStorage.getItem('userPhone');
       const currentTime = new Date();
-      const response = await fetch('http://${ipAddress}:5000/api/report-delivery', {
+      const response = await fetch(`http://${ipAddress}:5000/api/report-delivery`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

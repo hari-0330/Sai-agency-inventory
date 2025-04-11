@@ -32,7 +32,10 @@ const ManageUsers = ({ navigation }) => {
   };
 
   const renderUserItem = ({ item }) => (
-    <View style={styles.userCard}>
+    <TouchableOpacity 
+      style={styles.userCard}
+      onPress={() => navigation.navigate('MyOrders', { userPhone: item.phone })}
+    >
       <Icon name="person" size={24} color="#007AFF" />
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
@@ -40,7 +43,7 @@ const ManageUsers = ({ navigation }) => {
         <Text style={styles.userDetail}>Gender: {item.gender}</Text>
         <Text style={styles.userDetail}>Phone: {item.phone}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

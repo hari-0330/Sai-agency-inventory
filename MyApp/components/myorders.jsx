@@ -6,18 +6,22 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
 import { ipAddress } from "../ipConfig";
 
-const MyOrders = ({ navigation }) => {
+const MyOrders = ({ navigation, route  }) => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('reports');
 
+  const viewingUserPhone = route.params?.userPhone;
+
   useEffect(() => {
     loadData();
-  }, []);
+  }, [viewingUserPhone]);
+
+  
 
   const loadData = async () => {
     try {
-      const userPhone = await AsyncStorage.getItem('userPhone');
+      const userPhone = viewingUserPhone || await AsyncStorage.getItem('userPhone');
       if (!userPhone) {
         setLoading(false);
         return;
