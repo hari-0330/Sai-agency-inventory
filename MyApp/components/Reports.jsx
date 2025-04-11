@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Alert } from "react-native";
+import { View, Text, StyleSheet, FlatList, Alert, TextInput, TouchableOpacity } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
-import { TouchableOpacity } from "react-native";
 import { ipAddress } from "../ipConfig";
 
 const Reports = ({ navigation }) => {
   const [activities, setActivities] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [filterActive, setFilterActive] = useState(false);
 
   useEffect(() => {
     fetchActivities();
@@ -15,10 +18,11 @@ const Reports = ({ navigation }) => {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch('http://${ipAddress}:5000/api/activities');
+      const response = await fetch(`http://${ipAddress}:5000/api/activities`);
       const data = await response.json();
       if (response.ok) {
         setActivities(data.activities || []);
+        setFilteredActivities(data.activities || []);
       } else {
         Alert.alert('Error', data.error || 'Failed to fetch activities');
       }
@@ -28,6 +32,32 @@ const Reports = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFilter = () => {
+    if (!startDate && !endDate) {
+      setFilteredActivities(activities);
+      setFilterActive(false);
+      return;
+    }
+
+    const filtered = activities.filter(activity => {
+      const activityDate = new Date(activity.timestamp);
+      const start = startDate ? new Date(startDate) : new Date(0);
+      const end = endDate ? new Date(endDate) : new Date();
+      
+      return activityDate >= start && activityDate <= end;
+    });
+
+    setFilteredActivities(filtered);
+    setFilterActive(true);
+  };
+
+  const clearFilter = () => {
+    setStartDate('');
+    setEndDate('');
+    setFilteredActivities(activities);
+    setFilterActive(false);
   };
 
   const renderActivityItem = ({ item }) => (
@@ -106,7 +136,7 @@ const Reports = ({ navigation }) => {
         
         <TouchableOpacity 
           style={styles.sideNavItem} 
-          onPress={() => navigation.navigate('ManageOrders')}
+          onPress={() => navigation.navigate('Orders')}
         >
           <Icon name="shopping-cart" size={24} color={theme.colors.primary} />
           <Text style={styles.sideNavText}>Orders</Text>
@@ -126,6 +156,48 @@ const Reports = ({ navigation }) => {
           <Text style={styles.title}>Activity Reports</Text>
         </View>
 
+        {/* Filter Section */}
+        <View style={styles.filterContainer}>
+          <View style={styles.filterInputs}>
+            <View style={styles.dateInput}>
+              <Text style={styles.dateLabel}>Start Date:</Text>
+              <TextInput
+                style={styles.input}
+                value={startDate}
+                onChangeText={setStartDate}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor={theme.colors.secondary}
+              />
+            </View>
+            <View style={styles.dateInput}>
+              <Text style={styles.dateLabel}>End Date:</Text>
+              <TextInput
+                style={styles.input}
+                value={endDate}
+                onChangeText={setEndDate}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor={theme.colors.secondary}
+              />
+            </View>
+          </View>
+          <View style={styles.filterButtons}>
+            <TouchableOpacity 
+              style={styles.filterButton} 
+              onPress={handleFilter}
+            >
+              <Text style={styles.filterButtonText}>Apply Filter</Text>
+            </TouchableOpacity>
+            {filterActive && (
+              <TouchableOpacity 
+                style={[styles.filterButton, styles.clearButton]} 
+                onPress={clearFilter}
+              >
+                <Text style={styles.filterButtonText}>Clear Filter</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
         {loading ? (
           <View style={styles.centerContent}>
             <Text style={styles.loadingText}>Loading...</Text>
@@ -133,7 +205,7 @@ const Reports = ({ navigation }) => {
         ) : (
           <View style={styles.listWrapper}>
             <FlatList
-              data={activities}
+              data={filteredActivities}
               renderItem={renderActivityItem}
               keyExtractor={(item) => item._id}
               contentContainerStyle={styles.listContainer}
@@ -266,6 +338,53 @@ const styles = StyleSheet.create({
     color: theme.colors.secondary,
     textAlign: 'center',
     marginTop: 32,
+  },
+  filterContainer: {
+    padding: 16,
+    backgroundColor: theme.colors.surface,
+    marginHorizontal: 24,
+    borderRadius: theme.roundness.medium,
+    ...theme.shadows.small,
+  },
+  filterInputs: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  dateInput: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  dateLabel: {
+    fontSize: 14,
+    color: theme.colors.text,
+    marginBottom: 4,
+  },
+  input: {
+    backgroundColor: theme.colors.background,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.roundness.small,
+    padding: 8,
+    color: theme.colors.text,
+  },
+  filterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  filterButton: {
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: theme.roundness.small,
+    marginLeft: 8,
+  },
+  filterButtonText: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+  clearButton: {
+    backgroundColor: theme.colors.error,
   },
 });
 

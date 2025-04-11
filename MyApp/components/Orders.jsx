@@ -14,28 +14,10 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../styles/theme';
 import NavBar from './NavBar';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { ipAddress } from '../ipConfig';
 
 // Dummy data for development
-const DUMMY_ORDERS = [
-  {
-    _id: '1',
-    deliveryPlace: 'Main Street 123',
-    deliveryDate: new Date().toISOString(),
-    cans25L: 2,
-    cans10L: 1,
-    cans1L: 5
-  },
-  {
-    _id: '2',
-    deliveryPlace: 'Park Avenue 456',
-    deliveryDate: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
-    cans25L: 0,
-    cans10L: 3,
-    cans1L: 2
-  }
-];
+
 
 const Orders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
@@ -141,7 +123,7 @@ const Orders = ({ navigation }) => {
         });
       } else {
         // Create new order
-        response = await fetch('http://${ipAddress}:5000/api/orders', {
+        response = await fetch(`http://${ipAddress}:5000/api/orders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -229,28 +211,29 @@ const Orders = ({ navigation }) => {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json'
                 },
               });
 
               if (response.ok) {
-                // Remove from local state after successful API call
-                setOrders(orders.filter(order => order._id !== orderId));
+                // Immediately update the UI
+                setOrders(currentOrders => currentOrders.filter(order => order._id !== orderId));
                 Alert.alert('Success', 'Order deleted successfully');
               } else {
-                // Handle API error
                 const errorData = await response.json();
-                Alert.alert('Error', errorData.message || 'Failed to delete order');
+                throw new Error(errorData.error || 'Failed to delete order');
               }
             } catch (error) {
               console.error('Error deleting order:', error);
               Alert.alert(
                 'Error',
-                'Failed to delete order. Please check your connection and try again.'
+                'Failed to delete order. Please try again.'
               );
             }
           },
         },
-      ]
+      ],
+      { cancelable: false }
     );
   };
 

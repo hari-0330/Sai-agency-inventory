@@ -64,7 +64,7 @@ const ManageUsers = ({ navigation }) => {
         
         <TouchableOpacity 
           style={styles.sideNavItem} 
-          onPress={() => navigation.navigate('ManageOrders')}
+          onPress={() => navigation.navigate('Orders')}
         >
           <Icon name="shopping-cart" size={24} color="#007AFF" />
           <Text style={styles.sideNavText}>Orders</Text>

@@ -67,11 +67,11 @@ const AdminDashboard = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.sideNav}>
-        <TouchableOpacity 
+      <TouchableOpacity 
           style={[styles.sideNavItem, styles.activeNavItem]} 
           onPress={() => navigation.navigate('AdminDashboard')}
         >
-          <Icon name="dashboard" size={24} color={theme.colors.primary} />
+          <Icon name="dashboard" size={24} color="#007AFF" />
           <Text style={styles.sideNavText}>Dashboard</Text>
         </TouchableOpacity>
         
@@ -79,7 +79,7 @@ const AdminDashboard = ({ navigation }) => {
           style={styles.sideNavItem} 
           onPress={() => navigation.navigate('ManageUsers')}
         >
-          <Icon name="people" size={24} color={theme.colors.primary} />
+          <Icon name="people" size={24} color="#007AFF" />
           <Text style={styles.sideNavText}>Users</Text>
         </TouchableOpacity>
         
@@ -87,7 +87,7 @@ const AdminDashboard = ({ navigation }) => {
           style={styles.sideNavItem} 
           onPress={() => navigation.navigate('Orders')}
         >
-          <Icon name="shopping-cart" size={24} color={theme.colors.primary} />
+          <Icon name="shopping-cart" size={24} color="#007AFF" />
           <Text style={styles.sideNavText}>Orders</Text>
         </TouchableOpacity>
         
@@ -95,7 +95,7 @@ const AdminDashboard = ({ navigation }) => {
           style={styles.sideNavItem} 
           onPress={() => navigation.navigate('Reports')}
         >
-          <Icon name="assessment" size={24} color={theme.colors.primary} />
+          <Icon name="assessment" size={24} color="#007AFF" />
           <Text style={styles.sideNavText}>Reports</Text>
         </TouchableOpacity>
       </View>
@@ -114,8 +114,11 @@ const AdminDashboard = ({ navigation }) => {
               <TouchableOpacity 
                 style={styles.editButton} 
                 onPress={() => setIsEditing(true)}
-              ><div>
-                <h4>Update</h4><Icon name="edit" size={24} color={theme.colors.primary}  /></div>
+              >
+                <View style={styles.editButtonContent}>
+                  <Text style={styles.editButtonText}>Update</Text>
+                  <Icon name="edit" size={24} color={theme.colors.primary} />
+                </View>
               </TouchableOpacity>
             )}
             <Text style={styles.sectionTitle}>Current Stock</Text>
@@ -171,7 +174,7 @@ const AdminDashboard = ({ navigation }) => {
                   onPress={() => setIsEditing(false)}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
-                  <span>Use "-"</span>
+                  <Text style={styles.buttonText}>-</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -192,32 +195,31 @@ const styles = StyleSheet.create({
   },
   sideNav: {
     width: 80,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: '#f5f5f5',
     paddingTop: 50,
     alignItems: 'center',
     borderRightWidth: 1,
-    borderRightColor: theme.colors.border,
-    ...theme.shadows.small,
-  },
-  icon:{
-    alignItems: 'center',
-   
+    borderRightColor: '#e0e0e0',
+    zIndex: 1,
   },
   sideNavItem: {
     alignItems: 'center',
     marginBottom: 30,
-    padding: 10,
-    borderRadius: theme.roundness.small,
-    width: '100%',
   },
   activeNavItem: {
-    backgroundColor: `${theme.colors.primary}15`,
+    backgroundColor: '#e3f2fd',
+    padding: 10,
+    borderRadius: 10,
   },
   sideNavText: {
     fontSize: 12,
-    color: theme.colors.primary,
+    color: '#007AFF',
     marginTop: 5,
-    fontWeight: '500',
+  },
+  
+  icon:{
+    alignItems: 'center',
+   
   },
   contentContainer: {
     flex: 1,
@@ -242,6 +244,16 @@ const styles = StyleSheet.create({
     alignItems:"end",
     padding: 10,
     borderRadius: theme.roundness.small,
+  },
+  editButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.primary,
+    marginRight: 8,
   },
   stockContainer: {
     backgroundColor: theme.colors.surface,

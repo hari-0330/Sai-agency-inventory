@@ -5,7 +5,7 @@ const router = express.Router();
 // Get all orders
 router.get('/api/orders', async (req, res) => {
   try {
-    const orders = await Order.find().sort({ deliveryDate: 1 });
+    const orders = await Order.find().sort({ deliveryDate: -1 });
     res.json({ orders });
   } catch (error) {
     console.error('Error fetching orders:', error);
@@ -42,14 +42,13 @@ router.post('/api/orders', async (req, res) => {
 router.put('/api/orders/:id', async (req, res) => {
   try {
     const { deliveryPlace, cans25L, cans10L, cans1L, deliveryDate } = req.body;
-    const orderId = req.params.id;
     
     if (!deliveryPlace) {
       return res.status(400).json({ error: 'Delivery place is required' });
     }
     
     const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
+      req.params.id,
       {
         deliveryPlace,
         cans25L: cans25L || 0,
@@ -74,8 +73,7 @@ router.put('/api/orders/:id', async (req, res) => {
 // Delete an order
 router.delete('/api/orders/:id', async (req, res) => {
   try {
-    const orderId = req.params.id;
-    const deletedOrder = await Order.findByIdAndDelete(orderId);
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
     
     if (!deletedOrder) {
       return res.status(404).json({ error: 'Order not found' });
