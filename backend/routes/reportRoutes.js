@@ -23,29 +23,35 @@ router.post('/report-delivery', async (req, res) => {
       const { cans25L, cans10L, cans1L, deliveryPlace, userPhone } = req.body;
       
       // Get current stock
-      const currentStock = await Stock.findOne();
+      const currentStock = await Stock.findOne().sort({ lastUpdated: -1 }).limit(1);
       if (!currentStock) {
         return res.status(404).json({ error: 'Stock not found' });
       }
   
+      // Parse the values to ensure they are numbers
+      const parsedCans25L = parseInt(cans25L) || 0;
+      const parsedCans10L = parseInt(cans10L) || 0;
+      const parsedCans1L = parseInt(cans1L) || 0;
+
       // Check if enough stock is available
-      if (currentStock.cans25L < cans25L || 
-          currentStock.cans10L < cans10L || 
-          currentStock.cans1L < cans1L) {
+      if (currentStock.cans25L < parsedCans25L || 
+          currentStock.cans10L < parsedCans10L || 
+          currentStock.cans1L < parsedCans1L) {
         return res.status(400).json({ error: 'Insufficient stock' });
       }
   
       // Update stock
-      currentStock.cans25L -= parseInt(cans25L) || 0;
-      currentStock.cans10L -= parseInt(cans10L) || 0;
-      currentStock.cans1L -= parseInt(cans1L) || 0;
+      currentStock.cans25L -= parsedCans25L;
+      currentStock.cans10L -= parsedCans10L;
+      currentStock.cans1L -= parsedCans1L;
+      currentStock.lastUpdated = new Date();
       await currentStock.save();
   
       // Create delivery report
       const newReport = new DeliveryReport({
-        cans25L: parseInt(cans25L) || 0,
-        cans10L: parseInt(cans10L) || 0,
-        cans1L: parseInt(cans1L) || 0,
+        cans25L: parsedCans25L,
+        cans10L: parsedCans10L,
+        cans1L: parsedCans1L,
         deliveryPlace,
         userPhone,
         timestamp: new Date()

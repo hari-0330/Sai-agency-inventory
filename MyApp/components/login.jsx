@@ -150,7 +150,7 @@ const Login = ({ navigation }) => {
       <View style={styles.card}>
         <View style={styles.header}>
           <Icon name="water-drop" size={40} color={theme.colors.primary} />
-          <Text style={styles.title}>Water Supply</Text>
+          <Text style={styles.title}>Sri Sai Agency</Text>
           <Text style={styles.subtitle}>Login to your account</Text>
         </View>
 

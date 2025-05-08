@@ -12,6 +12,7 @@ import {
   Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import theme from '../styles/theme';
 import NavBar from './NavBar';
 import { ipAddress } from '../ipConfig';
@@ -495,6 +496,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   sideNav: {
+    marginTop:40,
     width: 80,
     backgroundColor: theme.colors.surface,
     paddingTop: 50,
@@ -506,7 +508,7 @@ const styles = StyleSheet.create({
   sideNavItem: {
     alignItems: 'center',
     marginBottom: 30,
-    padding: 10,
+    padding: 1,
     borderRadius: theme.roundness.small,
     width: '100%',
   },
@@ -530,6 +532,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
+    paddingTop:40,
     fontSize: 28,
     fontWeight: '600',
     color: theme.colors.text,
@@ -545,6 +548,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 10,
+    marginTop:90,
     borderRadius: theme.roundness.small,
     ...theme.shadows.small,
   },

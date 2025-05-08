@@ -43,7 +43,7 @@ const Home = ({ navigation }) => {
         
         <TouchableOpacity 
           style={styles.navButton} 
-          onPress={() => navigation.navigate('MyOrders')}
+          onPress={() => navigation.navigate('UserOrders')}
         >
           <Icon name="list" size={24} color={theme.colors.surface} />
           <Text style={styles.navText}>Orders</Text>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, Dimensions } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { LineChart } from 'react-native-chart-kit';
 import theme from '../styles/theme';
 import { ipAddress } from "../ipConfig";
 
@@ -16,9 +17,21 @@ const AdminDashboard = ({ navigation }) => {
     cans10L: "0",
     cans1L: "0"
   });
+  const [activities, setActivities] = useState([]);
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+        strokeWidth: 2
+      }
+    ]
+  });
 
   useEffect(() => {
     fetchStock();
+    fetchActivities();
   }, []);
 
   const fetchStock = async () => {
@@ -36,6 +49,49 @@ const AdminDashboard = ({ navigation }) => {
     } catch (error) {
       console.error('Error fetching stock:', error);
     }
+  };
+
+  const fetchActivities = async () => {
+    try {
+      const response = await fetch(`http://${ipAddress}:5000/api/activities`);
+      const data = await response.json();
+      if (response.ok) {
+        setActivities(data.activities || []);
+        processChartData(data.activities);
+      }
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+    }
+  };
+
+  const processChartData = (activities) => {
+    const last7Days = new Array(7).fill(0).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      return d.toISOString().split('T')[0];
+    }).reverse();
+
+    const deliveryCounts = activities.reduce((acc, activity) => {
+      if (activity.type === 'delivery') {
+        const date = new Date(activity.timestamp).toISOString().split('T')[0];
+        acc[date] = (acc[date] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    const data = last7Days.map(date => deliveryCounts[date] || 0);
+    const labels = last7Days.map(date => date.slice(5));
+
+    setChartData({
+      labels,
+      datasets: [
+        {
+          data,
+          color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+          strokeWidth: 2
+        }
+      ]
+    });
   };
 
   const handleUpdateStock = async () => {
@@ -106,6 +162,36 @@ const AdminDashboard = ({ navigation }) => {
             <Text style={styles.title}>Admin Dashboard</Text>
           </View>
 
+         {/*} <View style={styles.chartContainer}>
+            <Text style={styles.sectionTitle}>Delivery Activity (Last 7 Days)</Text>
+            <LineChart
+              data={chartData}
+              width={Dimensions.get('window').width - 140}
+              height={220}
+              chartConfig={{
+                backgroundColor: theme.colors.surface,
+                backgroundGradientFrom: theme.colors.surface,
+                backgroundGradientTo: theme.colors.surface,
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+                labelColor: (opacity = 1) => theme.colors.text,
+                style: {
+                  borderRadius: 16,
+                },
+                propsForDots: {
+                  r: "6",
+                  strokeWidth: "2",
+                  stroke: theme.colors.primary
+                }
+              }}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16
+              }}
+            />
+          </View>*/}
+
           <View style={styles.stockContainer}>
             <View style={styles.icon}>
           
@@ -174,7 +260,6 @@ const AdminDashboard = ({ navigation }) => {
                   onPress={() => setIsEditing(false)}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
-                  <Text style={styles.buttonText}>-</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -187,13 +272,14 @@ const AdminDashboard = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop:12,
-    width:'90%',
+    paddingTop:2,
+    width:'100%',
     flex: 1,
     flexDirection: 'row',
     backgroundColor: theme.colors.background,
   },
   sideNav: {
+    marginTop:20,
     width: 80,
     backgroundColor: '#f5f5f5',
     paddingTop: 50,
@@ -208,7 +294,7 @@ const styles = StyleSheet.create({
   },
   activeNavItem: {
     backgroundColor: '#e3f2fd',
-    padding: 10,
+    padding: 1,
     borderRadius: 10,
   },
   sideNavText: {
@@ -227,6 +313,7 @@ const styles = StyleSheet.create({
     width:"100%"
   },
   mainContent: {
+    marginTop:40,
     flex: 1,
   },
   header: {
@@ -311,8 +398,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: theme.colors.surface,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '60',
   },
   dashboardGrid: {
     flexDirection: 'row',
@@ -339,7 +426,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: theme.colors.primary,
     marginTop: 5,
-  }
+  },
+  chartContainer: {
+    backgroundColor: theme.colors.surface,
+    padding: 16,
+    borderRadius: theme.roundness.medium,
+    marginBottom: 24,
+    ...theme.shadows.medium,
+  },
 });
 
 export default AdminDashboard; 

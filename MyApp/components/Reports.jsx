@@ -223,6 +223,7 @@ const Reports = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:40,
     flex: 1,
     paddingTop:12,
     flexDirection: 'row',
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
   sideNavItem: {
     alignItems: 'center',
     marginBottom: 30,
-    padding: 10,
+    padding: 1,
     borderRadius: theme.roundness.small,
     width: '100%',
   },
@@ -352,6 +353,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   dateInput: {
+    padding:2,
     flex: 1,
     marginHorizontal: 8,
   },
@@ -365,7 +367,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
     borderRadius: theme.roundness.small,
-    padding: 8,
+    padding: 3,
     color: theme.colors.text,
   },
   filterButtons: {

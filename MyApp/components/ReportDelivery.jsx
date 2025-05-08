@@ -17,7 +17,26 @@ const ReportDelivery = ({ navigation }) => {
 
   const handleSubmitReport = async () => {
     try {
+      // Validate delivery place
+      if (!deliveryDetails.deliveryPlace.trim()) {
+        Alert.alert('Error', 'Please enter a delivery location');
+        return;
+      }
+
+      // Validate quantities
+      if (parseInt(deliveryDetails.cans25L) === 0 && 
+          parseInt(deliveryDetails.cans10L) === 0 && 
+          parseInt(deliveryDetails.cans1L) === 0) {
+        Alert.alert('Error', 'Please enter at least one can quantity');
+        return;
+      }
+
       const userPhone = await AsyncStorage.getItem('userPhone');
+      if (!userPhone) {
+        Alert.alert('Error', 'Please login again');
+        return;
+      }
+
       const currentTime = new Date();
       const response = await fetch(`http://${ipAddress}:5000/api/report-delivery`, {
         method: 'POST',
@@ -27,9 +46,9 @@ const ReportDelivery = ({ navigation }) => {
         body: JSON.stringify({
           ...deliveryDetails,
           userPhone,
-          cans25L: parseInt(deliveryDetails.cans25L),
-          cans10L: parseInt(deliveryDetails.cans10L),
-          cans1L: parseInt(deliveryDetails.cans1L),
+          cans25L: parseInt(deliveryDetails.cans25L) || 0,
+          cans10L: parseInt(deliveryDetails.cans10L) || 0,
+          cans1L: parseInt(deliveryDetails.cans1L) || 0,
           timestamp: currentTime,
         }),
       });
